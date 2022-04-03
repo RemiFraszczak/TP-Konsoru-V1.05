@@ -77,28 +77,8 @@ public class App {
                 String nomveto = sc.nextLine();
                 System.out.println("Indiquer le nom du client :");
                 String nomcli = sc.nextLine();
-                if(properties.getProperty("persistence").equals("xml")){
-                    XMLRequests test = new XMLRequests();
-                    try{
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-                        Date parsedDate = dateFormat.parse(daterdv);
-                        Timestamp datetimestamp = new java.sql.Timestamp(parsedDate.getTime());
-                        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(datetimestamp);
-                        test.AddRdv(timeStamp,nomveto,nomcli);
-                    }catch(Exception e){
-                        System.out.println(e);
-                    }
-                }else{
-                    BDDRequests test = new BDDRequests();
-                    try{
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-                        Date parsedDate = dateFormat.parse(daterdv);
-                        Timestamp datetimestamp = new java.sql.Timestamp(parsedDate.getTime());
-                        test.prendrerdv(datetimestamp, nomveto, nomcli);
-                    }catch(Exception e){
-                        System.out.println(e);
-                    }
-                }
+                choix.condition3(daterdv, nomcli, nomveto);
+
             }else if(actionARealiser.equals("4")){
                 System.out.println("Suppression d'un rendez-vous.");
                 System.out.println("Indiquer une date et heure de début au format JJ/MM/AAAA HH:MM (ex: 18/03/2021 15:00) :");
@@ -134,3 +114,4 @@ public class App {
     }
     
 }
+
