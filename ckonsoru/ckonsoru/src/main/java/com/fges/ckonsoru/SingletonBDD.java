@@ -1,38 +1,30 @@
-package com.fges.ckonsoru;
-
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.Properties;
 public class SingletonBDD {
-    private static SingletonBDD choix;
-
+    private static Connection uniqueInstance;
     private SingletonBDD() {}
-    public static SingletonBDD getInstance() {
-        if (choix == null) {
-            choix = new SingletonBDD();
+
+    public static Connection getInstanceBdd() {
+        if (uniqueInstance == null) {
+            try{
+                ConfigLoader cf = new ConfigLoader();
+                Properties properties = cf.getProperties();
+                String dbConnUrl = properties.getProperty("bdd.url");
+                String dbUserName = properties.getProperty("bdd.login");
+                String dbPassword = properties.getProperty("bdd.mdp");
+
+                if(!"".equals(dbConnUrl)) {
+                    Class.forName("org.postgresql.Driver");
+                    Connection dbConn = DriverManager.getConnection(dbConnUrl, dbUserName, dbPassword);
+                    uniqueInstance = dbConn;
+                    return uniqueInstance;
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         }
-        return choix;
+        return null;
     }
-    // le reste des méthodes
-    public void condition1(String partiesdates[]) {
-        BDDRequests test = new BDDRequests();
-        test.bdd_creneaux(Integer.parseInt(partiesdates[2]), Integer.parseInt(partiesdates[1]), Integer.parseInt(partiesdates[0]));
-    }
-    public void condition2(String nomcli) {
-        BDDRequests test = new BDDRequests();
-        test.listerdv(nomcli);
-    }
-    public void condition3(String daterdv, String nomcli, String nomveto)
-    {
-        BDDRequests test = new BDDRequests();
-        try{
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-            Date parsedDate = dateFormat.parse(daterdv);
-            Timestamp datetimestamp = new java.sql.Timestamp(parsedDate.getTime());
-            test.prendrerdv(datetimestamp, nomveto, nomcli);
-        }catch(Exception e){
-            System.out.println(e);
-        }
-    }
+
 }
