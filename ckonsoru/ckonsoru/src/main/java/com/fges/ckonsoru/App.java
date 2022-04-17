@@ -5,25 +5,23 @@
  */
 package com.fges.ckonsoru;
 
+import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Scanner;
-
+import java.sql.Connection;
 /**
  * Launch the App
  * @author julie.jacques
  */
 public class App {
-
-    private static XML choix;
     public static void quitter(){
         System.exit(0);
     }
-
     public static void main(String args[]){
-
+     private static Groupe choix;
         Scanner sc = new Scanner(System.in); // Pour la saisie clavier
         
         System.out.println("Bienvenue sur Clinique Konsoru !");
@@ -31,10 +29,16 @@ public class App {
         // chargement de la configuration de la persistence
         ConfigLoader cf = new ConfigLoader();
         Properties properties = cf.getProperties();
-        
-        
+
         System.out.println("Mode de persistence : "
                 +properties.getProperty("persistence"));
+
+        if(properties.getProperty("persistence").equals("bdd")){
+            Groupe connexion = SingletonBDD.getInstanceBdd();
+            choix = new BDD(connexion);
+        }else{
+            choix = new XML();
+        }
 
         while(true){
             String actionARealiser = ""; // On le redéfinit chaque fois pour éviter une boucle infinie
@@ -114,4 +118,5 @@ public class App {
     }
     
 }
+
 
